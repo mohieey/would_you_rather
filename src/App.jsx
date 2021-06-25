@@ -32,7 +32,14 @@ function App() {
       <Layout>
         <Switch>
           <Route
-            path={["/login", "/questions", "/questions/:id", "/leaderboard"]}
+            path={[
+              "/",
+              "/login",
+              "/questions",
+              "/questions/:id",
+              "/leaderboard",
+            ]}
+            exact
           >
             <Login />
           </Route>

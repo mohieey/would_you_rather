@@ -23,7 +23,7 @@ const Navbar = () => {
             alt="avatar"
             style={{ width: "60px" }}
           />
-          Logged as {currentUser.name}
+          Hello, {currentUser.name}
         </div>
       )}
 
