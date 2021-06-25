@@ -7,7 +7,7 @@ const User = ({ user }) => {
 
   return (
     <div className={classes.card}>
-      <img src={user.avatarURL} style={{ width: "100%" }} />
+      <img src={user.avatarURL} alt="avatar" style={{ width: "100%" }} />
       <h1>{user.name}</h1>
       <h3 className="title">{`Score: ${score}`}</h3>
       <p>{`Answered Questions: ${answeredQuestions}`}</p>

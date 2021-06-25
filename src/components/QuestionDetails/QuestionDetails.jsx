@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Redirect } from "react-router";
 import { useDispatch } from "react-redux";
 
 import { answerQuestion } from "../../store/questions-slice";
@@ -15,14 +14,12 @@ const QuestionDetails = () => {
   const optionTwoRef = useRef();
   const dispatch = useDispatch();
 
-  if (!currentUser) return <Redirect to="/login"></Redirect>;
-
   const { id } = useParams();
   const question = useSelector((state) => state.questions.questions[id]);
 
-  if (!question) return <p>Not Found</p>;
-
   useEffect(() => {
+    if (!question) return <p>Not Found</p>;
+
     if (question.optionOne.votes.includes(currentUser.id)) {
       setIsAnsweredByCurrentUser(true);
       setSelectedOption("o1");
@@ -31,7 +28,7 @@ const QuestionDetails = () => {
       setIsAnsweredByCurrentUser(true);
       setSelectedOption("o2");
     }
-  }, []);
+  }, [currentUser.id, question]);
 
   const { avatarURL, name: authorName } = useSelector(
     (state) => state.users.users[question.author]
@@ -70,7 +67,7 @@ const QuestionDetails = () => {
 
   return (
     <div className={classes.card}>
-      <img src={avatarURL} style={{ width: "100%" }} />
+      <img src={avatarURL} alt="avatar" style={{ width: "100%" }} />
       <h1>{authorName} asks</h1>
       <p className="title">Would You Rather</p>
       {!isAnsweredByCurrentUser && (

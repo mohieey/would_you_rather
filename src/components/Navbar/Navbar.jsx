@@ -18,7 +18,11 @@ const Navbar = () => {
     <header className={classes.header}>
       {currentUser && (
         <div className={classes.logo}>
-          <img src={currentUser.avatarURL} style={{ width: "60px" }} />
+          <img
+            src={currentUser.avatarURL}
+            alt="avatar"
+            style={{ width: "60px" }}
+          />
           Logged as {currentUser.name}
         </div>
       )}

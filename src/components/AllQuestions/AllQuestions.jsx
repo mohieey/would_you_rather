@@ -2,15 +2,12 @@ import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchQuestions } from "../../store/questions-slice";
-import { useHistory, Redirect } from "react-router-dom";
 
 import Question from "../Question/Question";
 
 const AllQuestions = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [isLoading, setIsLoading] = useState(true);
-
-  if (!currentUser) return <Redirect to="/login" />;
 
   const questions = useSelector((state) => state.questions.questions);
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
@@ -26,7 +23,7 @@ const AllQuestions = () => {
 
   useEffect(() => {
     dispatch(fetchQuestions(setIsLoading));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const questionsArr = [];
@@ -56,7 +53,7 @@ const AllQuestions = () => {
     setAnsweredQuestions(answeredQuestions);
     setUnAnsweredQuestions(unAnsweredQuestions);
     setToShow(unAnsweredQuestions);
-  }, [questions]);
+  }, [questions, currentUser.id]);
 
   // useEffect(() => {
   //   const answeredQuestions = [];

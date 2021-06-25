@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import "./App.css";
 import Layout from "./components/Layout/Layout";
@@ -7,11 +7,28 @@ import AllQuestions from "./components/AllQuestions/AllQuestions";
 import { useSelector } from "react-redux";
 import NewQuestion from "./components/NewQuestion/NewQuestion";
 import QuestionDetails from "./components/QuestionDetails/QuestionDetails";
-import User from "./components/User/User";
 import Leaderboard from "./components/Leaderboard/Leaderboard";
 import NotFound from "./components/NotFound";
 
 function App() {
+  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  if (!currentUser)
+    return (
+      <Layout>
+        <Switch>
+          <Route
+            path={["/login", "/questions", "/questions/:id", "/leaderboard"]}
+          >
+            <Login />
+          </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
+      </Layout>
+    );
+
   return (
     <Layout>
       <Switch>

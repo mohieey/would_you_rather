@@ -1,21 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory, Redirect } from "react-router-dom";
 
 import { fetchUsers } from "../../store/users-slice";
 import User from "../User/User";
-import classes from "./Leaderboard.module.css";
 
 const Leaderboard = () => {
-  const currentUser = useSelector((state) => state.auth.currentUser);
-  const history = useHistory();
-
-  if (!currentUser) return <Redirect to="/login" />;
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchUsers());
-  }, []);
+  }, [dispatch]);
 
   const users = useSelector((state) => state.users.users);
   const [usersArr, setUsersArr] = useState([]);
@@ -26,6 +19,7 @@ const Leaderboard = () => {
     }
     setUsersArr(usersArr);
   }, [users]);
+
   return (
     <div>
       {usersArr
