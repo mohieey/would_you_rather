@@ -4,14 +4,28 @@ import "./App.css";
 import Layout from "./components/Layout/Layout";
 import Login from "./components/Login/Login";
 import AllQuestions from "./components/AllQuestions/AllQuestions";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "./store/auth-slice";
+
 import NewQuestion from "./components/NewQuestion/NewQuestion";
 import QuestionDetails from "./components/QuestionDetails/QuestionDetails";
 import Leaderboard from "./components/Leaderboard/Leaderboard";
 import NotFound from "./components/NotFound";
+import { fetchUsers } from "../src/store/users-slice";
+import { fetchQuestions } from "./store/questions-slice";
 
 function App() {
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  const dispatch = useDispatch();
+  const currentUser =
+    useSelector((state) => state.auth.currentUser) ||
+    JSON.parse(localStorage.getItem("authedUser"));
+
+  if (currentUser) {
+    dispatch(authActions.login(currentUser));
+  }
+
+  dispatch(fetchUsers());
+  dispatch(fetchQuestions(null));
 
   if (!currentUser)
     return (
@@ -39,7 +53,7 @@ function App() {
           <Login />
         </Route>
         <Route path="/questions" exact>
-          <AllQuestions />
+          <AllQuestions currentUser={currentUser} />
         </Route>
         <Route path="/questions/:id">
           <QuestionDetails />

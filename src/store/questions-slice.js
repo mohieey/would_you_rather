@@ -8,6 +8,7 @@ const questionsSlice = createSlice({
   reducers: {
     populateQuestions(state, action) {
       state.questions = action.payload;
+      localStorage.setItem("qs", JSON.stringify(action.payload));
     },
   },
 });
@@ -18,7 +19,7 @@ export const fetchQuestions = (setIsLoading) => {
   return (dispatch) => {
     _getQuestions().then((questions) => {
       dispatch(questionsActions.populateQuestions(questions));
-      setIsLoading(false);
+      if (setIsLoading) setIsLoading(false);
     });
   };
 };

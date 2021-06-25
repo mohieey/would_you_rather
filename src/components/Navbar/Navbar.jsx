@@ -55,6 +55,11 @@ const Navbar = () => {
               Logut
             </li>
           )}
+          {!currentUser && (
+            <NavLink className="btn btn-primary" to="/login">
+              Login
+            </NavLink>
+          )}
         </ul>
       </nav>
     </header>

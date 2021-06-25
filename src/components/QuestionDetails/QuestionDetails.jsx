@@ -5,17 +5,77 @@ import { useDispatch } from "react-redux";
 
 import { answerQuestion } from "../../store/questions-slice";
 import classes from "./QuestionDetails.module.css";
+import NotFound from "./../NotFound";
 
 const QuestionDetails = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [isAnsweredByCurrentUser, setIsAnsweredByCurrentUser] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const optionOneRef = useRef();
   const optionTwoRef = useRef();
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const question = useSelector((state) => state.questions.questions[id]);
+  // const question = useSelector((state) => state.questions.questions[id]);
+  const questions = useSelector((state) => state.questions);
+  const users = useSelector((state) => state.users);
+  const [question, setQuestion] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (questions.questions) {
+      if (questions.questions[id]) {
+        setQuestion(questions.questions[id]);
+      } else {
+        setNotFound(true);
+        setIsLoading(false);
+      }
+    }
+  }, [questions, id]);
+
+  useEffect(() => {
+    if (question) {
+      setOptionOneVotes(question.optionOne.votes.length);
+      setOptionTwoVotes(question.optionTwo.votes.length);
+      setTotalVotes(
+        question.optionOne.votes.length + question.optionTwo.votes.length
+      );
+      setPercentageForOptionOne(
+        Math.round(
+          (question.optionOne.votes.length /
+            (question.optionOne.votes.length +
+              question.optionTwo.votes.length)) *
+            100
+        )
+      );
+      setPercentageForOptionTwo(
+        100 -
+          (question.optionOne.votes.length /
+            (question.optionOne.votes.length +
+              question.optionTwo.votes.length)) *
+            100
+      );
+
+      setOptionOneText(question.optionOne.text);
+      setOptionTwoText(question.optionTwo.text);
+    }
+  }, [question]);
+
+  useEffect(() => {
+    if (users.users && question) {
+      setUser(users.users[question.author]);
+    }
+  }, [users, question]);
+
+  useEffect(() => {
+    if (user) {
+      setAvatarURL(user.avatarURL);
+      setAuthorName(user.name);
+      setIsLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!question) return <p>Not Found</p>;
@@ -29,10 +89,6 @@ const QuestionDetails = () => {
       setSelectedOption("o2");
     }
   }, [currentUser.id, question]);
-
-  const { avatarURL, name: authorName } = useSelector(
-    (state) => state.users.users[question.author]
-  );
 
   const anserQuestionHandler = (e) => {
     e.preventDefault();
@@ -57,13 +113,21 @@ const QuestionDetails = () => {
     dispatch(answerQuestion(answer));
   };
 
-  const optionOneVotes = question.optionOne.votes.length;
-  const optionTwoVotes = question.optionTwo.votes.length;
-  const totalVotes = optionOneVotes + optionTwoVotes;
-  const percentageForOptionOne = Math.round(
-    (optionOneVotes / totalVotes) * 100
-  );
-  const percentageForOptionTwo = 100 - percentageForOptionOne;
+  const [optionOneVotes, setOptionOneVotes] = useState(0);
+  const [optionTwoVotes, setOptionTwoVotes] = useState(0);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [percentageForOptionOne, setPercentageForOptionOne] = useState(0);
+  const [percentageForOptionTwo, setPercentageForOptionTwo] = useState(0);
+  const [optionOneText, setOptionOneText] = useState("");
+  const [optionTwoText, setOptionTwoText] = useState("");
+  const [avatarURL, setAvatarURL] = useState("");
+  const [authorName, setAuthorName] = useState("");
+
+  if (isLoading) {
+    return <h1>Loading..</h1>;
+  }
+
+  if (notFound) return <NotFound />;
 
   return (
     <div className={classes.card}>
@@ -81,7 +145,7 @@ const QuestionDetails = () => {
               value="optionOne"
               ref={optionOneRef}
             />
-            {question.optionOne.text}
+            {optionOneText}
           </div>
           <p className="my-3">OR</p>
           <div className="form-check">
@@ -94,7 +158,7 @@ const QuestionDetails = () => {
               ref={optionTwoRef}
               required
             />
-            {question.optionTwo.text}
+            {optionTwoText}
           </div>
 
           <button type="submit" className="btn btn-primary">

@@ -7,6 +7,7 @@ import Question from "../Question/Question";
 
 const AllQuestions = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const questions = useSelector((state) => state.questions.questions);
@@ -50,32 +51,10 @@ const AllQuestions = () => {
       return { unAnsClasses: prev.ansClasses, ansClasses: prev.unAnsClasses };
     });
 
-    setAnsweredQuestions(answeredQuestions);
-    setUnAnsweredQuestions(unAnsweredQuestions);
+    setAnsweredQuestions(answeredQuestions.reverse());
+    setUnAnsweredQuestions(unAnsweredQuestions.reverse());
     setToShow(unAnsweredQuestions);
   }, [questions, currentUser.id]);
-
-  // useEffect(() => {
-  //   const answeredQuestions = [];
-  //   const unAnsweredQuestions = [];
-  //   for (const question of questionsArr) {
-  //     if (
-  //       question.optionOne.votes.includes(currentUser.id) ||
-  //       question.optionTwo.votes.includes(currentUser.id)
-  //     ) {
-  //       answeredQuestions.push(question);
-  //     } else {
-  //       unAnsweredQuestions.push(question);
-  //     }
-  //   }
-  //   setCssClasses((prev) => {
-  //     if (prev.unAnsClasses === "nav-link active bg-success") return prev;
-  //     return { unAnsClasses: prev.ansClasses, ansClasses: prev.unAnsClasses };
-  //   });
-  //   setAnsweredQuestions(answeredQuestions);
-  //   setUnAnsweredQuestions(unAnsweredQuestions);
-  //   setToShow(unAnsweredQuestions);
-  // }, [questionsArr]);
 
   const showUnAnsweredQuestionsHandler = () => {
     setToShow(unAnsweredQuestions);
